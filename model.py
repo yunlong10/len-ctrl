@@ -8,17 +8,18 @@ from torch.utils.data import random_split
 class MyDataset(Dataset):
     def __init__(self, data):
         self.data = data
+        self.max_len = max([len(seq) for seq in data.values()])
 
     def __getitem__(self, index):
         key = list(self.data.keys())[index]
         target = self.data[key]['target']
         seq = self.data[key]['seq']
         label = self.data[key]['label']
+        seq += [0] * (self.max_len - len(seq))
         return target, seq, label
 
     def __len__(self):
         return len(self.data)
-
 
 
 class MyModel(nn.Module):
